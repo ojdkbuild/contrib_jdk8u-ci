@@ -44,11 +44,11 @@ script:
 deploy:
   provider: releases
   api_key:
-    secure: YOUR_API_KEY_ENCRYPTED
+    secure: UD7o86I6gUGhGiJB2bWPCzBN66TTQjzl5knX5V3jXcvttb3r1r53yNcBeiBvQRsRT/ZZpyiIlaGjia01R1EjqfCFVoZh6e4/vGTFfjAXLD3sRJG1k1DoNWpj9bOneGI8HDEJAGPHo4IQ5/9fRUGBj9Z2qAedsUMCESSjA7xhivA1sCr4EOCCx/RKzRchLLj/pXabk9J9PTxhhfs1l5rOWWDLt3QwHDbX2YnjEmIcKbScPt7hpkLG1ErgZqpz0o0qatGHXgZxSvlyPVWp8Lmv5YLzG5LV/njrCp9wijuvj7EOjB4A7hU5fw7SxfrINBLXXggcP5gO2tS0JJY3Vsknvr/VIxi3g+ZisA0FG3aM2Npf93HduyOSRUqBnRE8YEFHn7GTesXsIaSdyCfH/wghYFOxvgR1AgXmqqk7maF1HeKoHCTqlbdExBKiRX3QxWYGH/yqdmX8+b7Bt4qOG0NNqEQcjpYmPwYOsa/ff9o52nomn8tIMg6dhkPGoVbAodGRa2A1yQEXq3+1BmokR77HYtbcThmJy1tylvfwGJZ+9W/lWEY1YdRS7aee6Nv7i4KWas9o+sah0TMhHYskJbrqXQN+pEz7fVj7J4O1UnwhpVTycEAL7QjK6Ib954DztlNLqOS6Kcgc5hZQOox3GfTgOYeKxZr18fp3NEQMHaRIty8=
   file: jdk-tip-linux-x64.zip
   skip_cleanup: true
   on:
-    tags: true
+    repo: ojdkbuild/contrib_jdk8u-ci
 
 notifications:
   email:
