@@ -25,17 +25,16 @@ os:
 before_install:
   - export D="docker exec builder"
   - docker pull centos:6
-  - docker run -id --name builder -v `pwd`:/host centos:6 bash
+  - docker run -id --name builder -w /opt -v `pwd`:/host centos:6 bash
 
 install:
-  - $D yum install yum-utils git zip java-1.8.0-openjdk-headless -y
-  - $D yum-builddep java-1.8.0-openjdk -y
+  - $D yum install which git zip unzip java-1.7.0-openjdk-devel autoconf automake alsa-lib-devel binutils cups-devel desktop-file-utils elfutils fontconfig freetype-devel gcc-c++ libX11-devel libXi-devel libXinerama-devel libXt-devel libXtst-devel libXrender-devel xorg-x11-proto-devel -y
 
 before_script:
-  - $D git clone https://github.com/ojdkbuild/upstream_jdk-8u.git jdk
+  - $D git clone https://github.com/ojdkbuild/upstream_jdk-8u.git /jdk
 
 script:
-  - $D bash ./jdk/configure --enable-unlimited-crypto=yes --disable-debug-symbols --with-debug-level=release --with-stdc++lib=static --with-boot-jdk=/usr/lib/jvm/java-1.8.0-openjdk.x86_64
+  - $D bash /jdk/configure --enable-unlimited-crypto=yes --disable-debug-symbols --with-debug-level=release --with-stdc++lib=static --with-boot-jdk=/usr/lib/jvm/java-openjdk
   - $D make images LOG=info
   - $D mv ./images/j2sdk-image jdk-tip-linux-x64
   - $D zip -qyr9 jdk-tip-linux-x64.zip jdk-tip-linux-x64
