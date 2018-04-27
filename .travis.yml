@@ -22,32 +22,85 @@ services:
 os:
   - linux
 
+env:
+  - OJDK_MILESTONE=ojdkbuild
+  - OJDK_UPDATE=172
+  - OJDK_BUILD=11
+  - OJDK_RELEASE=1
+  - OJDK_ENABLE_DEBUG_SYMBOLS=no
+  - OJDK_WITH_DEBUG_LEVEL=release
+  - OJDK_IMAGE=jdk-8u$(OJDK_UPDATE)-$(OJDK_RELEASE)-linux-x64
+
 before_install:
   - export D="docker exec builder"
   - docker pull centos:6
-  - docker run -id --name builder -w /opt -v `pwd`:/host centos:6 bash
+  - docker run
+            -id
+            --name builder
+            -w /opt
+            -v `pwd`:/host
+            -e OJDK_TAG=jdk8u$(OJDK_UPDATE)-b$(OJDK_BUILD)
+            centos:6 bash
 
 install:
-  - $D yum install which git zip unzip java-1.7.0-openjdk-devel autoconf automake alsa-lib-devel binutils cups-devel desktop-file-utils elfutils fontconfig freetype-devel gcc-c++ libX11-devel libXi-devel libXinerama-devel libXt-devel libXtst-devel libXrender-devel xorg-x11-proto-devel -y
+  - $D yum install -y
+            which
+            git
+            zip
+            unzip
+            java-1.7.0-openjdk-devel
+            autoconf
+            automake
+            alsa-lib-devel
+            binutils
+            cups-devel
+            desktop-file-utils
+            elfutils
+            fontconfig
+            freetype-devel
+            gcc-c++
+            libX11-devel
+            libXi-devel
+            libXinerama-devel
+            libXt-devel
+            libXtst-devel
+            libXrender-devel
+            xorg-x11-proto-devel
 
 before_script:
   - $D git clone https://github.com/ojdkbuild/upstream_jdk-8u.git /jdk
+  - $D bash -c "cd /jdk && git checkout $(OJDK_TAG)"
 
 script:
-  - $D bash /jdk/configure --enable-unlimited-crypto=yes --disable-debug-symbols --with-debug-level=release --with-stdc++lib=static --with-boot-jdk=/usr/lib/jvm/java-openjdk
+  - $D bash /jdk/configure
+            --enable-unlimited-crypto=yes
+            --enable-debug-symbols=$(OJDK_ENABLE_DEBUG_SYMBOLS)
+            --enable-freetype-bundling=yes
+            --with-debug-level=$(OJDK_WITH_DEBUG_LEVEL)
+            --with-stdc++lib=static
+            --with-boot-jdk=/usr/lib/jvm/java-openjdk
+            --with-cacerts-file=/etc/pki/java/cacerts
+            --with-milestone=$(OJDK_RELEASE)-$(OJDK_MILESTONE)
+            --with-update-version=$(OJDK_UPDATE)
+            --with-build-number=$(OJDK_BUILD)
   - $D make images LOG=info
-  - $D mv ./images/j2sdk-image jdk-tip-linux-x64
-  - $D zip -qyr9 jdk-tip-linux-x64.zip jdk-tip-linux-x64
-  - $D mv jdk-tip-linux-x64.zip /host/
+  - $D mv ./images/j2sdk-image $(OJDK_IMAGE)
+  - $D zip -qyr9 $(OJDK_IMAGE).zip $(OJDK_IMAGE)
+  - $D sha256sum $(OJDK_IMAGE).zip > $(OJDK_IMAGE).zip.sha256
+  - $D mv $(OJDK_IMAGE).zip /host/
+  - $D mv $(OJDK_IMAGE).zip.sha256 /host/
 
 deploy:
   provider: releases
+  skip_cleanup: true
   api_key:
     secure: UD7o86I6gUGhGiJB2bWPCzBN66TTQjzl5knX5V3jXcvttb3r1r53yNcBeiBvQRsRT/ZZpyiIlaGjia01R1EjqfCFVoZh6e4/vGTFfjAXLD3sRJG1k1DoNWpj9bOneGI8HDEJAGPHo4IQ5/9fRUGBj9Z2qAedsUMCESSjA7xhivA1sCr4EOCCx/RKzRchLLj/pXabk9J9PTxhhfs1l5rOWWDLt3QwHDbX2YnjEmIcKbScPt7hpkLG1ErgZqpz0o0qatGHXgZxSvlyPVWp8Lmv5YLzG5LV/njrCp9wijuvj7EOjB4A7hU5fw7SxfrINBLXXggcP5gO2tS0JJY3Vsknvr/VIxi3g+ZisA0FG3aM2Npf93HduyOSRUqBnRE8YEFHn7GTesXsIaSdyCfH/wghYFOxvgR1AgXmqqk7maF1HeKoHCTqlbdExBKiRX3QxWYGH/yqdmX8+b7Bt4qOG0NNqEQcjpYmPwYOsa/ff9o52nomn8tIMg6dhkPGoVbAodGRa2A1yQEXq3+1BmokR77HYtbcThmJy1tylvfwGJZ+9W/lWEY1YdRS7aee6Nv7i4KWas9o+sah0TMhHYskJbrqXQN+pEz7fVj7J4O1UnwhpVTycEAL7QjK6Ib954DztlNLqOS6Kcgc5hZQOox3GfTgOYeKxZr18fp3NEQMHaRIty8=
-  file: jdk-tip-linux-x64.zip
-  skip_cleanup: true
+  file:
+    - $(OJDK_IMAGE).zip
+    - $(OJDK_IMAGE).zip.sha256
   on:
     repo: ojdkbuild/contrib_jdk8u-ci
+    tags: true
 
 notifications:
   email:
