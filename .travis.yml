@@ -92,9 +92,6 @@ script:
   - $D rm -rf ./${OJDK_IMAGE}/demo
   - $D rm -rf ./${OJDK_IMAGE}/sample
   - $D cp -a /usr/share/fonts/dejavu/ ./${OJDK_IMAGE}/jre/lib/fonts
-  - $D cp /usr/share/doc/dejavu-fonts-common-2.33/LICENSE ./${OJDK_IMAGE}/jre/lib/fonts/
-  - $D cp /usr/share/doc/dejavu-fonts-common-2.33/AUTHORS ./${OJDK_IMAGE}/jre/lib/fonts/
-  - $D cp /usr/share/doc/dejavu-fonts-common-2.33/README ./${OJDK_IMAGE}/jre/lib/fonts/
   - $D zip -qyr9 ${OJDK_IMAGE}.zip ${OJDK_IMAGE}
   - $D mv ${OJDK_IMAGE}.zip /host/
   - sha256sum ${OJDK_IMAGE}.zip > ${OJDK_IMAGE}.zip.sha256
