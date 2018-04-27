@@ -23,15 +23,18 @@ os:
   - linux
 
 env:
-  - OJDK_MILESTONE=ojdkbuild
-  - OJDK_UPDATE=172
-  - OJDK_BUILD=11
-  - OJDK_RELEASE=1
-  - OJDK_ENABLE_DEBUG_SYMBOLS=no
-  - OJDK_WITH_DEBUG_LEVEL=release
-  - OJDK_IMAGE=jdk-8u$(OJDK_UPDATE)-$(OJDK_RELEASE)-linux-x64
+  global:
+    - OJDK_MILESTONE=ojdkbuild
+    - OJDK_ENABLE_DEBUG_SYMBOLS=no
+    - OJDK_WITH_DEBUG_LEVEL=release
 
 before_install:
+  - set -e
+  - export OJDK_TAG=`git describe --exact-match --tags HEAD`
+  - if [ -z ${OJDK_TAG} ] ; then exit 1 ; fi
+  - export OJDK_UPDATE=`echo ${OJDK_TAG} | sed 's/-/ /' | awk '{print substr($1,6)}'`
+  - export OJDK_BUILD=`echo ${OJDK_TAG} | sed 's/-/ /' | awk '{print substr($2,2)}'`
+  - export OJDK_IMAGE=jdk-8u${OJDK_UPDATE}-${OJDK_MILESTONE}-linux-x64
   - export D="docker exec builder"
   - docker pull centos:6
   - docker run
@@ -39,7 +42,6 @@ before_install:
             --name builder
             -w /opt
             -v `pwd`:/host
-            -e OJDK_TAG=jdk8u$(OJDK_UPDATE)-b$(OJDK_BUILD)
             centos:6 bash
 
 install:
@@ -69,26 +71,24 @@ install:
 
 before_script:
   - $D git clone https://github.com/ojdkbuild/upstream_jdk-8u.git /jdk
-  - $D bash -c "cd /jdk && git checkout $(OJDK_TAG)"
+  - $D bash -c "cd /jdk ; git checkout ${OJDK_TAG}"
 
 script:
   - $D bash /jdk/configure
             --enable-unlimited-crypto=yes
-            --enable-debug-symbols=$(OJDK_ENABLE_DEBUG_SYMBOLS)
-            --enable-freetype-bundling=yes
-            --with-debug-level=$(OJDK_WITH_DEBUG_LEVEL)
+            --enable-debug-symbols=${OJDK_ENABLE_DEBUG_SYMBOLS}
+            --with-debug-level=${OJDK_WITH_DEBUG_LEVEL}
             --with-stdc++lib=static
             --with-boot-jdk=/usr/lib/jvm/java-openjdk
             --with-cacerts-file=/etc/pki/java/cacerts
-            --with-milestone=$(OJDK_RELEASE)-$(OJDK_MILESTONE)
-            --with-update-version=$(OJDK_UPDATE)
-            --with-build-number=$(OJDK_BUILD)
+            --with-milestone=${OJDK_MILESTONE}
+            --with-update-version=${OJDK_UPDATE}
+            --with-build-number=${OJDK_BUILD}
   - $D make images LOG=info
-  - $D mv ./images/j2sdk-image $(OJDK_IMAGE)
-  - $D zip -qyr9 $(OJDK_IMAGE).zip $(OJDK_IMAGE)
-  - $D sha256sum $(OJDK_IMAGE).zip > $(OJDK_IMAGE).zip.sha256
-  - $D mv $(OJDK_IMAGE).zip /host/
-  - $D mv $(OJDK_IMAGE).zip.sha256 /host/
+  - $D mv ./images/j2sdk-image ${OJDK_IMAGE}
+  - $D zip -qyr9 ${OJDK_IMAGE}.zip ${OJDK_IMAGE}
+  - $D mv ${OJDK_IMAGE}.zip /host/
+  - sha256sum ${OJDK_IMAGE}.zip > ${OJDK_IMAGE}.zip.sha256
 
 deploy:
   provider: releases
@@ -96,8 +96,8 @@ deploy:
   api_key:
     secure: UD7o86I6gUGhGiJB2bWPCzBN66TTQjzl5knX5V3jXcvttb3r1r53yNcBeiBvQRsRT/ZZpyiIlaGjia01R1EjqfCFVoZh6e4/vGTFfjAXLD3sRJG1k1DoNWpj9bOneGI8HDEJAGPHo4IQ5/9fRUGBj9Z2qAedsUMCESSjA7xhivA1sCr4EOCCx/RKzRchLLj/pXabk9J9PTxhhfs1l5rOWWDLt3QwHDbX2YnjEmIcKbScPt7hpkLG1ErgZqpz0o0qatGHXgZxSvlyPVWp8Lmv5YLzG5LV/njrCp9wijuvj7EOjB4A7hU5fw7SxfrINBLXXggcP5gO2tS0JJY3Vsknvr/VIxi3g+ZisA0FG3aM2Npf93HduyOSRUqBnRE8YEFHn7GTesXsIaSdyCfH/wghYFOxvgR1AgXmqqk7maF1HeKoHCTqlbdExBKiRX3QxWYGH/yqdmX8+b7Bt4qOG0NNqEQcjpYmPwYOsa/ff9o52nomn8tIMg6dhkPGoVbAodGRa2A1yQEXq3+1BmokR77HYtbcThmJy1tylvfwGJZ+9W/lWEY1YdRS7aee6Nv7i4KWas9o+sah0TMhHYskJbrqXQN+pEz7fVj7J4O1UnwhpVTycEAL7QjK6Ib954DztlNLqOS6Kcgc5hZQOox3GfTgOYeKxZr18fp3NEQMHaRIty8=
   file:
-    - $(OJDK_IMAGE).zip
-    - $(OJDK_IMAGE).zip.sha256
+    - ${OJDK_IMAGE}.zip
+    - ${OJDK_IMAGE}.zip.sha256
   on:
     repo: ojdkbuild/contrib_jdk8u-ci
     tags: true
