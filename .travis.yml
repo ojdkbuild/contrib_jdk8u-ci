@@ -68,6 +68,9 @@ install:
             libXtst-devel
             libXrender-devel
             xorg-x11-proto-devel
+            dejavu-serif-fonts
+            dejavu-sans-fonts
+            dejavu-sans-mono-fonts
 
 before_script:
   - $D git clone https://github.com/ojdkbuild/upstream_jdk-8u.git /jdk
@@ -86,6 +89,12 @@ script:
             --with-build-number=${OJDK_BUILD}
   - $D make images LOG=info
   - $D mv ./images/j2sdk-image ${OJDK_IMAGE}
+  - $D rm -rf ./${OJDK_IMAGE}/demo
+  - $D rm -rf ./${OJDK_IMAGE}/sample
+  - $D cp -a /usr/share/fonts/dejavu/ ./${OJDK_IMAGE}/jre/lib/fonts
+  - $D cp /usr/share/doc/dejavu-fonts-common-2.33/LICENSE ./${OJDK_IMAGE}/jre/lib/fonts/
+  - $D cp /usr/share/doc/dejavu-fonts-common-2.33/AUTHORS ./${OJDK_IMAGE}/jre/lib/fonts/
+  - $D cp /usr/share/doc/dejavu-fonts-common-2.33/README ./${OJDK_IMAGE}/jre/lib/fonts/
   - $D zip -qyr9 ${OJDK_IMAGE}.zip ${OJDK_IMAGE}
   - $D mv ${OJDK_IMAGE}.zip /host/
   - sha256sum ${OJDK_IMAGE}.zip > ${OJDK_IMAGE}.zip.sha256
