@@ -1,7 +1,7 @@
 OpenJDK 8 Linux builds
 ======================
 
-[![travis](https://travis-ci.org/ojdkbuild/contrib_jdk8u-ci.svg?branch=master)](https://travis-ci.org/ojdkbuild/contrib_jdk8u-ci)
+[![travis](https://travis-ci.org/ojdkbuild/contrib_jdk8u-ci.svg?branch=jdk8u172-b11)](https://travis-ci.org/ojdkbuild/contrib_jdk8u-ci/builds)
 
 OpenJDK 8 "vanilla" builds done on Travis CI - [downloads](https://github.com/ojdkbuild/contrib_jdk8u-ci/releases).
 
@@ -12,13 +12,3 @@ License information
 
 OpenJDK binaries are released under the [GNU GPL v. 2 with classpath exception](https://github.com/ojdkbuild/contrib_jdk8u-ci/blob/master/LICENSE).
 
-Changelog
----------
-
-**2018-04-27**
-
- * `8u172` build
-
-**2018-04-26**
-
- * `8u171` build
