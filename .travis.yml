@@ -73,11 +73,48 @@ install:
             dejavu-sans-mono-fonts
 
 before_script:
-  - $D git clone https://github.com/ojdkbuild/upstream_jdk-8u.git /jdk
-  - $D bash -c "cd /jdk ; git checkout ${OJDK_TAG}"
+  - $D curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/archive/${OJDK_TAG}.tar.bz2
+  - $D tar -xjf ${OJDK_TAG}.tar.bz2
+  - $D rm ${OJDK_TAG}.tar.bz2
+  - $D mv jdk8u-${OJDK_TAG} /jdk8u
+  # corba  
+  - $D curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/corba/archive/${OJDK_TAG}.tar.bz2
+  - $D tar -xjf ${OJDK_TAG}.tar.bz2
+  - $D rm ${OJDK_TAG}.tar.bz2
+  - $D mv corba-${OJDK_TAG} /jdk8u/corba
+  # hotspot
+  - $D curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/hotspot/archive/${OJDK_TAG}.tar.bz2
+  - $D tar -xjf ${OJDK_TAG}.tar.bz2
+  - $D rm ${OJDK_TAG}.tar.bz2
+  - $D mv hotspot-${OJDK_TAG} /jdk8u/hotspot
+  # jaxp
+  - $D curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/jaxp/archive/${OJDK_TAG}.tar.bz2
+  - $D tar -xjf ${OJDK_TAG}.tar.bz2
+  - $D rm ${OJDK_TAG}.tar.bz2
+  - $D mv jaxp-${OJDK_TAG} /jdk8u/jaxp
+  # jaxws
+  - $D curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/jaxws/archive/${OJDK_TAG}.tar.bz2
+  - $D tar -xjf ${OJDK_TAG}.tar.bz2
+  - $D rm ${OJDK_TAG}.tar.bz2
+  - $D mv jaxws-${OJDK_TAG} /jdk8u/jaxws
+  # jdk
+  - $D curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/jdk/archive/${OJDK_TAG}.tar.bz2
+  - $D tar -xjf ${OJDK_TAG}.tar.bz2
+  - $D rm ${OJDK_TAG}.tar.bz2
+  - $D mv jdk-${OJDK_TAG} /jdk8u/jdk
+  # langtools
+  - $D curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/langtools/archive/${OJDK_TAG}.tar.bz2
+  - $D tar -xjf ${OJDK_TAG}.tar.bz2
+  - $D rm ${OJDK_TAG}.tar.bz2
+  - $D mv langtools-${OJDK_TAG} /jdk8u/langtools
+  # nashorn
+  - $D curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/nashorn/archive/${OJDK_TAG}.tar.bz2
+  - $D tar -xjf ${OJDK_TAG}.tar.bz2
+  - $D rm ${OJDK_TAG}.tar.bz2
+  - $D mv nashorn-${OJDK_TAG} /jdk8u/nashorn
 
 script:
-  - $D bash /jdk/configure
+  - $D bash /jdk8u/configure
             --enable-unlimited-crypto=yes
             --enable-debug-symbols=${OJDK_ENABLE_DEBUG_SYMBOLS}
             --with-debug-level=${OJDK_WITH_DEBUG_LEVEL}
