@@ -58,7 +58,7 @@ install:
             cups-devel
             desktop-file-utils
             elfutils
-            fontconfig
+            fontconfig-devel
             freetype-devel
             gcc-c++
             libX11-devel
