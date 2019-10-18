@@ -121,7 +121,7 @@ script:
             --with-stdc++lib=static
             --with-boot-jdk=/usr/lib/jvm/java-openjdk
             --with-cacerts-file=/etc/pki/java/cacerts
-            --with-milestone=${OJDK_MILESTONE}
+            --with-milestone=fcs
             --with-update-version=${OJDK_UPDATE}
             --with-build-number=${OJDK_BUILD}
   - $D make images LOG=info
