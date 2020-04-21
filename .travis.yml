@@ -124,6 +124,10 @@ script:
             --with-milestone=fcs
             --with-update-version=${OJDK_UPDATE}
             --with-build-number=${OJDK_BUILD}
+            --with-vendor-name=ojdkbuild
+            --with-vendor-url=https://github.com/ojdkbuild
+            --with-vendor-bug-url=https://github.com/ojdkbuild/ojdkbuild/issues
+            --with-vendor-vm-bug-url=https://github.com/ojdkbuild/ojdkbuild/issues
   - $D make images LOG=info
   - $D mv ./images/j2sdk-image ${OJDK_IMAGE}
   - $D rm -rf ./${OJDK_IMAGE}/demo
