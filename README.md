@@ -1,7 +1,7 @@
 OpenJDK 8 Linux builds
 ======================
 
-[![travis](https://travis-ci.org/ojdkbuild/contrib_jdk8u-ci.svg?branch=jdk8u262-b10)](https://travis-ci.org/ojdkbuild/contrib_jdk8u-ci/builds)
+[![travis](https://travis-ci.org/ojdkbuild/contrib_jdk8u-ci.svg?branch=jdk8u265-b01)](https://travis-ci.org/ojdkbuild/contrib_jdk8u-ci/builds)
 
 OpenJDK 8 "vanilla" builds done on Travis CI - [downloads](https://github.com/ojdkbuild/contrib_jdk8u-ci/releases).
 
