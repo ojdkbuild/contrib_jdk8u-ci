@@ -1,0 +1,91 @@
+# Copyright 2021, akashche at redhat.com
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+task:
+  matrix:
+    container:
+      image: ojdkbuild/centos6-jdk8u
+      cpu: 2
+      memory: 2G
+
+  script: |
+    set -e
+    export OJDK_TAG=`git describe --exact-match --tags HEAD`
+    if [ -z ${OJDK_TAG} ] ; then exit 1 ; fi
+    export OJDK_UPDATE=`echo ${OJDK_TAG} | sed 's/-/ /' | awk '{print substr($1,6)}'`
+    export OJDK_BUILD=`echo ${OJDK_TAG} | sed 's/-/ /' | awk '{print substr($2,2)}'`
+    export OJDK_IMAGE=jdk-8u${OJDK_UPDATE}-ojdkbuild-linux-x64
+    # root
+    curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/archive/${OJDK_TAG}.tar.bz2
+    tar -xjf ${OJDK_TAG}.tar.bz2
+    rm ${OJDK_TAG}.tar.bz2
+    mv jdk8u-${OJDK_TAG} /jdk8u
+    # corba  
+    curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/corba/archive/${OJDK_TAG}.tar.bz2
+    tar -xjf ${OJDK_TAG}.tar.bz2
+    rm ${OJDK_TAG}.tar.bz2
+    mv corba-${OJDK_TAG} /jdk8u/corba
+    # hotspot
+    curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/hotspot/archive/${OJDK_TAG}.tar.bz2
+    tar -xjf ${OJDK_TAG}.tar.bz2
+    rm ${OJDK_TAG}.tar.bz2
+    mv hotspot-${OJDK_TAG} /jdk8u/hotspot
+    # jaxp
+    curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/jaxp/archive/${OJDK_TAG}.tar.bz2
+    tar -xjf ${OJDK_TAG}.tar.bz2
+    rm ${OJDK_TAG}.tar.bz2
+    mv jaxp-${OJDK_TAG} /jdk8u/jaxp
+    # jaxws
+    curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/jaxws/archive/${OJDK_TAG}.tar.bz2
+    tar -xjf ${OJDK_TAG}.tar.bz2
+    rm ${OJDK_TAG}.tar.bz2
+    mv jaxws-${OJDK_TAG} /jdk8u/jaxws
+    # jdk
+    curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/jdk/archive/${OJDK_TAG}.tar.bz2
+    tar -xjf ${OJDK_TAG}.tar.bz2
+    rm ${OJDK_TAG}.tar.bz2
+    mv jdk-${OJDK_TAG} /jdk8u/jdk
+    # langtools
+    curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/langtools/archive/${OJDK_TAG}.tar.bz2
+    tar -xjf ${OJDK_TAG}.tar.bz2
+    rm ${OJDK_TAG}.tar.bz2
+    mv langtools-${OJDK_TAG} /jdk8u/langtools
+    # nashorn
+    curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/nashorn/archive/${OJDK_TAG}.tar.bz2
+    tar -xjf ${OJDK_TAG}.tar.bz2
+    rm ${OJDK_TAG}.tar.bz2
+    mv nashorn-${OJDK_TAG} /jdk8u/nashorn
+    # build
+    cd /opt && bash /jdk8u/configure \
+            --enable-unlimited-crypto=yes \
+            --enable-debug-symbols=no \
+            --with-debug-level=release \
+            --with-stdc++lib=static \
+            --with-boot-jdk=/usr/lib/jvm/java-openjdk \
+            --with-cacerts-file=/etc/pki/java/cacerts \
+            --with-milestone=fcs \
+            --with-update-version=${OJDK_UPDATE} \
+            --with-build-number=${OJDK_BUILD} \
+            --with-vendor-name=ojdkbuild \
+            --with-vendor-url=https://github.com/ojdkbuild \
+            --with-vendor-bug-url=https://github.com/ojdkbuild/ojdkbuild/issues \
+            --with-vendor-vm-bug-url=https://github.com/ojdkbuild/ojdkbuild/issues
+    cd /opt && make images LOG=info
+    mv /opt/images/j2sdk-image /opt/${OJDK_IMAGE}
+    rm -rf /opt/${OJDK_IMAGE}/demo
+    rm -rf /opt/${OJDK_IMAGE}/sample
+    cp -a /usr/share/fonts/dejavu/ /opt/${OJDK_IMAGE}/jre/lib/fonts
+    cd /opt && zip -qyr9 ${OJDK_IMAGE}.zip ${OJDK_IMAGE}
+    sha256sum /opt/${OJDK_IMAGE}.zip > /opt/${OJDK_IMAGE}.zip.sha256

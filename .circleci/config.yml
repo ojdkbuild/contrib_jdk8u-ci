@@ -96,5 +96,10 @@ workflows:
   version: 2.1
   jdk8u:
     jobs:
-      - jdk8u
+      - jdk8u:
+          filters:
+            branches:
+              only: master
+            tags:
+              only: disable
 
