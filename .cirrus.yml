@@ -25,9 +25,8 @@ task:
 
   script: |
     set -e
-    export OJDK_TAG=jdk8u282-b08
-    #export OJDK_TAG=`git describe --exact-match --tags HEAD`
-    #if [ -z ${OJDK_TAG} ] ; then exit 1 ; fi
+    export OJDK_TAG=`git describe --exact-match --tags HEAD`
+    if [ -z ${OJDK_TAG} ] ; then exit 1 ; fi
     export OJDK_UPDATE=`echo ${OJDK_TAG} | sed 's/-/ /' | awk '{print substr($1,6)}'`
     export OJDK_BUILD=`echo ${OJDK_TAG} | sed 's/-/ /' | awk '{print substr($2,2)}'`
     export OJDK_IMAGE=jdk-8u${OJDK_UPDATE}-ojdkbuild-linux-x64
@@ -46,11 +45,9 @@ task:
             --with-vendor-name=ojdkbuild \
             --with-vendor-url=https://github.com/ojdkbuild \
             --with-vendor-bug-url=https://github.com/ojdkbuild/ojdkbuild/issues \
-            --with-vendor-vm-bug-url=https://github.com/ojdkbuild/ojdkbuild/issues \
-            --with-num-cores=2
+            --with-vendor-vm-bug-url=https://github.com/ojdkbuild/ojdkbuild/issues
     unset OS
-    env
-    cd /opt && make images LOG=debug
+    cd /opt && make images LOG=info
     mv /opt/images/j2sdk-image /opt/${OJDK_IMAGE}
     rm -rf /opt/${OJDK_IMAGE}/demo
     rm -rf /opt/${OJDK_IMAGE}/sample
@@ -60,6 +57,6 @@ task:
     mv /opt/${OJDK_IMAGE}.zip /opt/dist/${OJDK_IMAGE}.zip
     cd /opt/dit && sha256sum ${OJDK_IMAGE}.zip > ${OJDK_IMAGE}.zip.sha256
     # deploy
-    #curl -LO https://github.com/tcnksm/ghr/releases/download/v0.13.0/ghr_v0.13.0_linux_amd64.tar.gz
-    #tar -xzf ghr_v0.13.0_linux_amd64.tar.gz
-    #./ghr_v0.13.0_linux_amd64/ghr -t $(GITHUB_TOKEN) -u ojdkbuild -r ojdkbuild -c ${CIRRUS_CHANGE_IN_REPO} ${CIRRUS_TAG} /opt/dist
+    curl -LO https://github.com/tcnksm/ghr/releases/download/v0.13.0/ghr_v0.13.0_linux_amd64.tar.gz
+    tar -xzf ghr_v0.13.0_linux_amd64.tar.gz
+    ./ghr_v0.13.0_linux_amd64/ghr -t $(GITHUB_TOKEN) -u ojdkbuild -r ojdkbuild -c ${CIRRUS_CHANGE_IN_REPO} ${CIRRUS_TAG} /opt/dist

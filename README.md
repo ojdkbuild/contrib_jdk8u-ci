@@ -1,9 +1,9 @@
 OpenJDK 8 Linux builds
 ======================
 
-[![travis](https://travis-ci.org/ojdkbuild/contrib_jdk8u-ci.svg?branch=jdk8u282-b08)](https://travis-ci.org/ojdkbuild/contrib_jdk8u-ci/builds)
+[![cirrus](https://api.cirrus-ci.com/github/ojdkbuild/contrib_jdk8u-ci.svg)](https://cirrus-ci.com/github/ojdkbuild/contrib_jdk8u-ci)
 
-OpenJDK 8 "vanilla" builds done on Travis CI - [downloads](https://github.com/ojdkbuild/contrib_jdk8u-ci/releases).
+OpenJDK 8 "vanilla" builds done on [Cirrus CI](https://cirrus-ci.org/) - [downloads](https://github.com/ojdkbuild/contrib_jdk8u-ci/releases).
 
 Builds are done in CentOS 6 containers for better compatibility with various Linux distributions.
 
