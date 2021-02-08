@@ -99,4 +99,4 @@ task:
     # deploy
     curl -LO https://github.com/tcnksm/ghr/releases/download/v0.13.0/ghr_v0.13.0_linux_amd64.tar.gz
     tar -xzf ghr_v0.13.0_linux_amd64.tar.gz
-    ./ghr_v0.13.0_linux_amd64/ghr -t ${GITHUB_TOKEN} -u ojdkbuild -r ojdkbuild -c ${CIRRUS_CHANGE_IN_REPO} ${CIRRUS_TAG} /opt/dist
+    ./ghr_v0.13.0_linux_amd64/ghr -t ${GITHUB_TOKEN} -u ojdkbuild -r contrib_jdk8u-ci -c ${CIRRUS_CHANGE_IN_REPO} ${CIRRUS_TAG} /opt/dist
