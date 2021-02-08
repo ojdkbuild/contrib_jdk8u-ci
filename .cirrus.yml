@@ -20,6 +20,9 @@ task:
       cpu: 2
       memory: 2G
 
+  environment:
+    GITHUB_TOKEN: ENCRYPTED[f9fd6575c318132c9cf39e9f8ed5ee53710a425de67925c93b63d177884383a0e3533f2db40b2f32044c049d552c7c66]
+
   script: |
     set -e
     export OJDK_TAG=`git describe --exact-match --tags HEAD`
@@ -81,11 +84,18 @@ task:
             --with-vendor-name=ojdkbuild \
             --with-vendor-url=https://github.com/ojdkbuild \
             --with-vendor-bug-url=https://github.com/ojdkbuild/ojdkbuild/issues \
-            --with-vendor-vm-bug-url=https://github.com/ojdkbuild/ojdkbuild/issues
+            --with-vendor-vm-bug-url=https://github.com/ojdkbuild/ojdkbuild/issues \
+            --with-num-cores=2
     cd /opt && make images LOG=info
     mv /opt/images/j2sdk-image /opt/${OJDK_IMAGE}
     rm -rf /opt/${OJDK_IMAGE}/demo
     rm -rf /opt/${OJDK_IMAGE}/sample
     cp -a /usr/share/fonts/dejavu/ /opt/${OJDK_IMAGE}/jre/lib/fonts
     cd /opt && zip -qyr9 ${OJDK_IMAGE}.zip ${OJDK_IMAGE}
-    sha256sum /opt/${OJDK_IMAGE}.zip > /opt/${OJDK_IMAGE}.zip.sha256
+    mkdir /opt/dist
+    mv /opt/${OJDK_IMAGE}.zip /opt/dist/${OJDK_IMAGE}.zip
+    cd /opt/dit && sha256sum ${OJDK_IMAGE}.zip > ${OJDK_IMAGE}.zip.sha256
+    # deploy
+    curl -LO https://github.com/tcnksm/ghr/releases/download/v0.13.0/ghr_v0.13.0_linux_amd64.tar.gz
+    tar -xzf ghr_v0.13.0_linux_amd64.tar.gz
+    ./ghr_v0.13.0_linux_amd64/ghr -t $(GITHUB_TOKEN) -u ojdkbuild -r ojdkbuild -c ${CIRRUS_CHANGE_IN_REPO} ${CIRRUS_TAG} /opt/dist
