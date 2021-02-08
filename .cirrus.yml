@@ -84,8 +84,7 @@ task:
             --with-vendor-name=ojdkbuild \
             --with-vendor-url=https://github.com/ojdkbuild \
             --with-vendor-bug-url=https://github.com/ojdkbuild/ojdkbuild/issues \
-            --with-vendor-vm-bug-url=https://github.com/ojdkbuild/ojdkbuild/issues \
-            --with-num-cores=2
+            --with-vendor-vm-bug-url=https://github.com/ojdkbuild/ojdkbuild/issues
     cd /opt && make images LOG=info
     mv /opt/images/j2sdk-image /opt/${OJDK_IMAGE}
     rm -rf /opt/${OJDK_IMAGE}/demo
