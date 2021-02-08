@@ -30,7 +30,46 @@ task:
     export OJDK_UPDATE=`echo ${OJDK_TAG} | sed 's/-/ /' | awk '{print substr($1,6)}'`
     export OJDK_BUILD=`echo ${OJDK_TAG} | sed 's/-/ /' | awk '{print substr($2,2)}'`
     export OJDK_IMAGE=jdk-8u${OJDK_UPDATE}-ojdkbuild-linux-x64
-    git clone https://github.com/ojdkbuild/8u282-test.git /jdk8u
+    # root
+    curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/archive/${OJDK_TAG}.tar.bz2
+    tar -xjf ${OJDK_TAG}.tar.bz2
+    rm ${OJDK_TAG}.tar.bz2
+    mv jdk8u-${OJDK_TAG} /jdk8u
+    # corba  
+    curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/corba/archive/${OJDK_TAG}.tar.bz2
+    tar -xjf ${OJDK_TAG}.tar.bz2
+    rm ${OJDK_TAG}.tar.bz2
+    mv corba-${OJDK_TAG} /jdk8u/corba
+    # hotspot
+    curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/hotspot/archive/${OJDK_TAG}.tar.bz2
+    tar -xjf ${OJDK_TAG}.tar.bz2
+    rm ${OJDK_TAG}.tar.bz2
+    mv hotspot-${OJDK_TAG} /jdk8u/hotspot
+    # jaxp
+    curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/jaxp/archive/${OJDK_TAG}.tar.bz2
+    tar -xjf ${OJDK_TAG}.tar.bz2
+    rm ${OJDK_TAG}.tar.bz2
+    mv jaxp-${OJDK_TAG} /jdk8u/jaxp
+    # jaxws
+    curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/jaxws/archive/${OJDK_TAG}.tar.bz2
+    tar -xjf ${OJDK_TAG}.tar.bz2
+    rm ${OJDK_TAG}.tar.bz2
+    mv jaxws-${OJDK_TAG} /jdk8u/jaxws
+    # jdk
+    curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/jdk/archive/${OJDK_TAG}.tar.bz2
+    tar -xjf ${OJDK_TAG}.tar.bz2
+    rm ${OJDK_TAG}.tar.bz2
+    mv jdk-${OJDK_TAG} /jdk8u/jdk
+    # langtools
+    curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/langtools/archive/${OJDK_TAG}.tar.bz2
+    tar -xjf ${OJDK_TAG}.tar.bz2
+    rm ${OJDK_TAG}.tar.bz2
+    mv langtools-${OJDK_TAG} /jdk8u/langtools
+    # nashorn
+    curl -LO http://hg.openjdk.java.net/jdk8u/jdk8u/nashorn/archive/${OJDK_TAG}.tar.bz2
+    tar -xjf ${OJDK_TAG}.tar.bz2
+    rm ${OJDK_TAG}.tar.bz2
+    mv nashorn-${OJDK_TAG} /jdk8u/nashorn
     # build
     cd /opt && bash /jdk8u/configure \
             --enable-unlimited-crypto=yes \
