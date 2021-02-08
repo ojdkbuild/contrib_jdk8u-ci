@@ -25,8 +25,9 @@ task:
 
   script: |
     set -e
-    export OJDK_TAG=`git describe --exact-match --tags HEAD`
-    if [ -z ${OJDK_TAG} ] ; then exit 1 ; fi
+    export OJDK_TAG=jdk8u282-b08
+    #export OJDK_TAG=`git describe --exact-match --tags HEAD`
+    #if [ -z ${OJDK_TAG} ] ; then exit 1 ; fi
     export OJDK_UPDATE=`echo ${OJDK_TAG} | sed 's/-/ /' | awk '{print substr($1,6)}'`
     export OJDK_BUILD=`echo ${OJDK_TAG} | sed 's/-/ /' | awk '{print substr($2,2)}'`
     export OJDK_IMAGE=jdk-8u${OJDK_UPDATE}-ojdkbuild-linux-x64
@@ -47,8 +48,9 @@ task:
             --with-vendor-bug-url=https://github.com/ojdkbuild/ojdkbuild/issues \
             --with-vendor-vm-bug-url=https://github.com/ojdkbuild/ojdkbuild/issues \
             --with-num-cores=2
+    unset OS
     env
-    cd /opt && make images LOG=info
+    cd /opt && make images LOG=debug
     mv /opt/images/j2sdk-image /opt/${OJDK_IMAGE}
     rm -rf /opt/${OJDK_IMAGE}/demo
     rm -rf /opt/${OJDK_IMAGE}/sample
