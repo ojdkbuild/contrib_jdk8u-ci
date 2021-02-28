@@ -77,7 +77,6 @@ task:
             --with-debug-level=release \
             --with-stdc++lib=static \
             --with-boot-jdk=/usr/lib/jvm/java-openjdk \
-            --with-cacerts-file=/etc/pki/java/cacerts \
             --with-milestone=fcs \
             --with-update-version=${OJDK_UPDATE} \
             --with-build-number=${OJDK_BUILD} \
@@ -95,8 +94,8 @@ task:
     cd /opt && zip -qyr9 ${OJDK_IMAGE}.zip ${OJDK_IMAGE}
     mkdir /opt/dist
     mv /opt/${OJDK_IMAGE}.zip /opt/dist/${OJDK_IMAGE}.zip
-    cd /opt/dit && sha256sum ${OJDK_IMAGE}.zip > ${OJDK_IMAGE}.zip.sha256
+    cd /opt/dist && sha256sum ${OJDK_IMAGE}.zip > ${OJDK_IMAGE}.zip.sha256
     # deploy
-    curl -LO https://github.com/tcnksm/ghr/releases/download/v0.13.0/ghr_v0.13.0_linux_amd64.tar.gz
-    tar -xzf ghr_v0.13.0_linux_amd64.tar.gz
-    ./ghr_v0.13.0_linux_amd64/ghr -t ${GITHUB_TOKEN} -u ojdkbuild -r contrib_jdk8u-ci -c ${CIRRUS_CHANGE_IN_REPO} ${CIRRUS_TAG} /opt/dist
+    cd /opt && curl -LO https://github.com/tcnksm/ghr/releases/download/v0.13.0/ghr_v0.13.0_linux_amd64.tar.gz
+    cd /opt && tar -xzf ghr_v0.13.0_linux_amd64.tar.gz
+    /opt/ghr_v0.13.0_linux_amd64/ghr -t ${GITHUB_TOKEN} -u ojdkbuild -r contrib_jdk8u-ci -c ${CIRRUS_CHANGE_IN_REPO} ${CIRRUS_TAG} /opt/dist

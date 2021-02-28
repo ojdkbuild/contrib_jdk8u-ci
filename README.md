@@ -1,11 +1,11 @@
 OpenJDK 8 Linux builds
 ======================
 
-[![cirrus](https://api.cirrus-ci.com/github/ojdkbuild/contrib_jdk8u-ci.svg)](https://cirrus-ci.com/github/ojdkbuild/contrib_jdk8u-ci)
+[![cirrus](https://api.cirrus-ci.com/github/ojdkbuild/contrib_jdk8u-ci.svg?branch=jdk8u282-b08)](https://cirrus-ci.com/github/ojdkbuild/contrib_jdk8u-ci)
 
 OpenJDK 8 "vanilla" builds done on [Cirrus CI](https://cirrus-ci.org/) - [downloads](https://github.com/ojdkbuild/contrib_jdk8u-ci/releases).
 
-Builds are done in CentOS 6 containers for better compatibility with various Linux distributions.
+Builds are done in a CentOS 6 container for better compatibility with various Linux distributions.
 
 License information
 -------------------
