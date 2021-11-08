@@ -1,7 +1,7 @@
 OpenJDK 8 Linux builds
 ======================
 
-[![cirrus](https://api.cirrus-ci.com/github/ojdkbuild/contrib_jdk8u-ci.svg?branch=jdk8u302-b08)](https://cirrus-ci.com/github/ojdkbuild/contrib_jdk8u-ci)
+[![cirrus](https://api.cirrus-ci.com/github/ojdkbuild/contrib_jdk8u-ci.svg?branch=jdk8u312-b07)](https://cirrus-ci.com/github/ojdkbuild/contrib_jdk8u-ci)
 
 OpenJDK 8 "vanilla" builds done on [Cirrus CI](https://cirrus-ci.org/) - [downloads](https://github.com/ojdkbuild/contrib_jdk8u-ci/releases).
 
