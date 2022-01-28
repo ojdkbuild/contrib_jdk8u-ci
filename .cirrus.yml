@@ -34,7 +34,7 @@ task:
     curl -LO https://hg.openjdk.java.net/jdk8u/monojdk8u/archive/${OJDK_TAG}.tar.bz2
     tar -xjf ${OJDK_TAG}.tar.bz2
     rm ${OJDK_TAG}.tar.bz2
-    mv jdk8u-${OJDK_TAG} /jdk8u
+    mv monojdk8u-${OJDK_TAG} /jdk8u
     # build
     cd /opt && bash /jdk8u/configure \
             --enable-unlimited-crypto=yes \
